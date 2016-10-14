@@ -24,48 +24,39 @@ var currencyCode = items.find(function(item) {
 })
 
 // #4
-// using find to search within the materials values to find 'wood' and pushing the title of each of those items into a new array. outside of the function, using .join to split each item in the array with a line break and printing out the result
-// originally, I just used console.log within the function to print out the title of each item that met the criteria. I switched to pushing to a new array and then using .join so the result would be one larger console.log instead of a console.log for each item
-var woodenItemsList = []
-var woodenItems = items.find(function(item) {
-    if(item.materials.includes('wood')) {
-        woodenItemsList.push(item.title)
+// I understand why the find method was not being used correctly in this function and the next one. I think I realized that I could have switched out the method to be filter or forEach when I finished the homework yesterday, but didn't change it then because it was still displaying the correct answer.
+// I changed this function to use the filter method and return the items that include 'wood' in the materials list
+// Then, I used the map function to return just the title of the items within the array.  The console.log joins the items in the array with a line break.
+var woodenItems = items.filter(function(item) {
+    if (item.materials.includes('wood')) {
+        return item
     }
 })
-woodenItemsList = woodenItemsList.join('\n')
-console.log(woodenItemsList)
+woodenItems = woodenItems.map(function(item) {
+    return item.title
+})
+console.log(woodenItems.join('\n'))
 
 // #5
-// first, using .join to separate the materials list within each item by a line break
-// then finding all items with a list of materials greater than or equal to 8 and pushing the item title, length and materials (list separated by the .join method higher up in the function) with some text into the new array created outside of the function
-// using .join on the new array to split the items with two line breaks
-// originally, I just used console.log within the function to print out the title of each item that met the criteria. I switched to pushing to a new array and then using .join so the result would be one larger console.log instead of a console.log for each title
-var eightMaterialsList = []
-var eightMaterials = items.find(function(item) {
-    var materials = item.materials.join('\n')
+// Used the same process as #4 with the execption of adding in the materials variable in the map function.  I added this so I could join the array of materials with a line break and return that value in the final string. I joined the final array with two line breaks in the console.log
+var eightMaterials = items.filter(function(item) {
     if(item.materials.length >= 8) {
-        eightMaterialsList.push(item.title + ' has ' + (item.materials).length + ' materials: \n' + materials)
+        return item
     }
 })
-eightMaterialsList = eightMaterialsList.join('\n\n')
-console.log(eightMaterialsList)
+eightMaterials = eightMaterials.map(function(item) {
+    var materials = item.materials.join('\n')
+    return (item.title + ' has ' + (item.materials).length + ' materials: \n' + materials)
+})
+console.log(eightMaterials.join('\n\n'))
 
 // #6
-// using the forEach method here instead of find since I am pushing into a new array created outside of the function. I'm realizing that I could have done this or used filter with the previous functions since I changed those to push things into an array instead of returning.
-// using an if statement to find the 'i_did' value in the who_made values and pushing each item title into a new array
-// logging the lengths of the array plus the text at the end
-var makers = []
-var whoMade = items.forEach(function(item) {
-    if(item.who_made === 'i_did') {
-        makers.push(item.title)
-    }
-})
-console.log(makers.length + ' were made by their sellers')
-
-
-
-
-
-
-
-//
+// I found the ... syntax while looking at the reduce documentation on MDN. I searched for the meaning of ... and found that it is called spread syntax. If I understand correctly, spread works like a combination of push and splice (depending on where/how spread syntax is applied within a function). In this case, I only want the spread syntax on previous because that is the item I want to push into a new array. Since current becomes previous with the next loop of the function, there isn't a need to push both previous and current into the new array within the same loop.  I also don't need to specify the .who_made on previous because current finds the correct item for me and previous just pushes it into the new array, I don't need to reassign that to the .who_made key.
+// Within the reduce function, after the previous and current calls and push into a new array, I call the filter function on that new array to only return things that include the 'i_did' value.
+// I then log the length of of the new filtered array whoMade and concatenate a string after to present the correct text
+var whoMade = items.reduce(function(previous, current) {
+    return ([...previous, current.who_made]).filter(function(item) {
+        return item.includes('i_did')
+    })
+}, [])
+console.log(whoMade.length + ' were made by their sellers')
